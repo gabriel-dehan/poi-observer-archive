@@ -1,0 +1,7 @@
+<p style="padding-top: 15px">
+  <%= current_user.email %>
+  <%= link_to destroy_session_path(:user), method: :delete do %>
+    <i class="fa.fa-sign-out"></i>Logout 
+  <% end %>
+</p>
+ 

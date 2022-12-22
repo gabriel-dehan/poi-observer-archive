@@ -1,0 +1,15 @@
+<div class="main-content-area">
+  <div class="main-content-container">
+    <div class="main-content">
+      <h1 style="margin-bottom: 1em;">Export an impact data CSV for <b><%= @app.name %></b></h1>
+      <%= form_tag parse_csv_and_import_remote_applications_admin_path(@app.id), multipart: true, class: "form-inline" do %>
+        <div class="form-group">
+          <%= file_field_tag :csv %>
+        </div>
+        <div class="form-group">
+          <%= submit_tag "Import", class: "btn btn-success" %>
+        </div>
+      <% end %>
+    </div>    
+  </div>
+</div>

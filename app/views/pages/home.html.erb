@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.0/xterm.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.0/xterm.js"></script>
+<div class="terminal-container">
+  <div id="terminal"></div>
+  <script>
+    var termBuffer = "";
+    var term = new Terminal();
+    term.open(document.getElementById('terminal'));
+    term.writeln('Welcome to the Poi Observer\n')
+    <% if flash[:alert] || flash[:notice] %>
+      <% p flash[:alert] %>
+      term.writeln("\x1B[92m<%= flash[:alert] || flash[:notice] %>\x1B[0m")
+    <% end %>
+    term.prompt = () => {
+      term.write('\r\n$ ');
+    };
+    
+    term.prompt();
+   
+    term.on('key', function(key, ev) {
+      const printable = !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey;
+
+      if (ev.keyCode === 13) {
+        if (termBuffer == "ls") { 
+          term.writeln('');
+          term.writeln('\x1B[92m/sidekiq\x1B[0m   /admin');
+        } else if (termBuffer == "cd /admin" || termBuffer == "cd admin" || termBuffer == "admin" || termBuffer == "login") { 
+          window.location.pathname = "/admin"
+        } else if (termBuffer == "cd /sidekiq" || termBuffer == "cd sidekiq" || termBuffer == "sidekiq") { 
+          window.location.pathname = "/sidekiq"
+        } else if (termBuffer == "help") {
+          term.writeln('');
+          term.writeln('\x1B[92mlogin\x1B[0m: go to login page');
+          term.writeln('\x1B[92mcd /admin, admin\x1B[0m: go to administration panel');
+          term.writeln('\x1B[92mcd /sidekiq, sidekiq\x1B[0m: go to sidekiq\'s panel');
+        }
+
+        termBuffer = ""
+
+        term.prompt();
+      } else if (ev.keyCode === 8) {
+        // Do not delete the prompt
+        if (term._core.buffer.x > 2) {
+            term.write('\b \b');
+        }
+      } else if (printable) {
+        termBuffer += key
+        term.write(key);
+      }
+    });
+
+    term.on('paste', function(data) {
+        term.write(data);
+    });
+  </script>
+</div>
